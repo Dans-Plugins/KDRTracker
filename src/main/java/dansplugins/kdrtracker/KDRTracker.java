@@ -1,6 +1,7 @@
 package dansplugins.kdrtracker;
 
 import dansplugins.kdrtracker.commands.DefaultCommand;
+import dansplugins.kdrtracker.commands.ViewCommand;
 import dansplugins.kdrtracker.listeners.DeathListener;
 import dansplugins.kdrtracker.utils.Logger;
 import org.bukkit.command.Command;
@@ -66,7 +67,7 @@ public final class KDRTracker extends PonderBukkitPlugin {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if (args.length == 0) {
-            DefaultCommand defaultCommand = new DefaultCommand();
+            DefaultCommand defaultCommand = new DefaultCommand(this);
             return defaultCommand.execute(sender);
         }
 
@@ -139,7 +140,8 @@ public final class KDRTracker extends PonderBukkitPlugin {
      */
     private void initializeCommandService() {
         ArrayList<AbstractPluginCommand> commands = new ArrayList<>(Arrays.asList(
-                new HelpCommand()
+                new HelpCommand(),
+                new ViewCommand(persistentData)
         ));
         commandService.initialize(commands, "That command wasn't found.");
     }

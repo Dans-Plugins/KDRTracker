@@ -18,7 +18,8 @@ public class HelpCommand extends AbstractPluginCommand {
 
     @Override
     public boolean execute(CommandSender commandSender) {
-        commandSender.sendMessage(ChatColor.AQUA + "/kdrt help");
+        commandSender.sendMessage(ChatColor.AQUA + "/kdrt help - View a list of helpful commands.");
+        commandSender.sendMessage(ChatColor.AQUA + "/kdrt view - View your K/D ratio.");
         return true;
     }
 
