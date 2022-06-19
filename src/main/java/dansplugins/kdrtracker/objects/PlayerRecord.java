@@ -39,6 +39,16 @@ public class PlayerRecord {
         setDeaths(getDeaths() + 1);
     }
 
+    public double getRatio() {
+        if (deaths == 0) {
+            return 1;
+        }
+        double dKills = kills;
+        double dDeaths = deaths;
+
+        return dKills/dDeaths;
+    }
+
     private void setKills(int kills) {
         this.kills = kills;
     }

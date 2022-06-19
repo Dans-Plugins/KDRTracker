@@ -12,6 +12,8 @@ import preponderous.ponder.minecraft.bukkit.abs.AbstractPluginCommand;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import static org.bukkit.ChatColor.AQUA;
+
 /**
  * @author Daniel McCoy Stephenson
  * @since June 19th, 2022
@@ -22,7 +24,7 @@ public class ViewCommand extends AbstractPluginCommand {
     private final PersistentData persistentData;
 
     public ViewCommand(PersistentData persistentData) {
-        super(new ArrayList<>(Arrays.asList("default")), new ArrayList<>(Arrays.asList("kdrt.default")));
+        super(new ArrayList<>(Arrays.asList("view")), new ArrayList<>(Arrays.asList("kdrt.view")));
         this.persistentData = persistentData;
     }
 
@@ -45,18 +47,14 @@ public class ViewCommand extends AbstractPluginCommand {
         int kills = playerRecord.getKills();
         int deaths = playerRecord.getDeaths();
 
-        player.sendMessage("Kills: " + kills);
-        player.sendMessage("Deaths: " + deaths);
-        player.sendMessage("K/D Ratio: " + getRatio(kills, deaths));
+        player.sendMessage(AQUA + "Kills: " + kills);
+        player.sendMessage(AQUA + "Deaths: " + deaths);
+        player.sendMessage(AQUA + "K/D Ratio: " + playerRecord.getRatio());
         return true;
     }
 
     @Override
     public boolean execute(CommandSender commandSender, String[] strings) {
         return execute(commandSender);
-    }
-
-    private double getRatio(double kills, double deaths) {
-        return kills/deaths;
     }
 }

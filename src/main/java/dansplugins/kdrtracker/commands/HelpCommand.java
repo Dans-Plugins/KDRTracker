@@ -7,6 +7,8 @@ import preponderous.ponder.minecraft.bukkit.abs.AbstractPluginCommand;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.bukkit.ChatColor.AQUA;
+
 /**
  * @author Daniel McCoy Stephenson
  */
@@ -18,8 +20,8 @@ public class HelpCommand extends AbstractPluginCommand {
 
     @Override
     public boolean execute(CommandSender commandSender) {
-        commandSender.sendMessage(ChatColor.AQUA + "/kdrt help - View a list of helpful commands.");
-        commandSender.sendMessage(ChatColor.AQUA + "/kdrt view - View your K/D ratio.");
+        commandSender.sendMessage(AQUA + "/kdrt help - View a list of helpful commands.");
+        commandSender.sendMessage(AQUA + "/kdrt view - View your K/D ratio.");
         return true;
     }
 
