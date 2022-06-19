@@ -1,12 +1,12 @@
-name: ExamplePonderPlugin
+name: KDRTracker
 version: '${project.version}'
-main: preponderous.exampleponderplugin.ExamplePonderPlugin
+main: dansplugins.kdrtracker.KDRTracker
 api-version: 1.13
 
 commands:
-  exampleponderplugin:
-  epp:
+  kdrtracker:
+  kdrt:
 
 permissions:
-  epp.help:
+  kdrt.help:
     default: true
