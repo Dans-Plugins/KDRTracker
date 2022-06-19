@@ -1,7 +1,10 @@
 package dansplugins.kdrtracker.objects;
 
 import org.bukkit.entity.Player;
+import preponderous.ponder.misc.abs.Savable;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -10,13 +13,17 @@ import java.util.UUID;
  *
  * This class is intended to keep track of a player's kills and deaths.
  */
-public class PlayerRecord {
-    private final UUID playerUUID;
+public class PlayerRecord implements Savable {
+    private UUID playerUUID;
     private int kills = 0;
     private int deaths = 0;
 
     public PlayerRecord(Player player) {
         this.playerUUID = player.getUniqueId();
+    }
+
+    public PlayerRecord(Map<String, String> data) {
+        this.load(data);
     }
 
     public UUID getPlayerUUID() {
@@ -41,7 +48,7 @@ public class PlayerRecord {
 
     public double getRatio() {
         if (deaths == 0) {
-            return 1;
+            return kills;
         }
         double dKills = kills;
         double dDeaths = deaths;
@@ -55,5 +62,21 @@ public class PlayerRecord {
 
     private void setDeaths(int deaths) {
         this.deaths = deaths;
+    }
+
+    @Override
+    public Map<String, String> save() {
+        Map<String, String> data = new HashMap<>();
+        data.put("playerUUID", playerUUID.toString());
+        data.put("kills", "" + kills);
+        data.put("deaths", "" + deaths);
+        return data;
+    }
+
+    @Override
+    public void load(Map<String, String> map) {
+        playerUUID = UUID.fromString(map.get("playerUUID"));
+        kills = Integer.parseInt(map.get("kills"));
+        deaths = Integer.parseInt(map.get("deaths"));
     }
 }

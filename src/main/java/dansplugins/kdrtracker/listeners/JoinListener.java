@@ -19,8 +19,8 @@ public class JoinListener implements Listener {
         this.playerRecordFactory = playerRecordFactory;
     }
 
-    @EventHandler()
-    public void handle(PlayerJoinEvent event) {
+    @EventHandler
+    public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
         if (!persistentData.playerHasRecord(player)) {
             playerRecordFactory.createPlayerRecord(player);

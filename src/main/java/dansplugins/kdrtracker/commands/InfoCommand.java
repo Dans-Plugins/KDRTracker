@@ -1,10 +1,8 @@
 package dansplugins.kdrtracker.commands;
 
-import dansplugins.kdrtracker.KDRTracker;
 import dansplugins.kdrtracker.data.PersistentData;
 import dansplugins.kdrtracker.exceptions.PlayerRecordNotFoundException;
 import dansplugins.kdrtracker.objects.PlayerRecord;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import preponderous.ponder.minecraft.bukkit.abs.AbstractPluginCommand;
@@ -20,11 +18,11 @@ import static org.bukkit.ChatColor.AQUA;
  *
  * This command is intended to allow players to view their ratio.
  */
-public class ViewCommand extends AbstractPluginCommand {
+public class InfoCommand extends AbstractPluginCommand {
     private final PersistentData persistentData;
 
-    public ViewCommand(PersistentData persistentData) {
-        super(new ArrayList<>(Arrays.asList("view")), new ArrayList<>(Arrays.asList("kdrt.view")));
+    public InfoCommand(PersistentData persistentData) {
+        super(new ArrayList<>(Arrays.asList("info", "view")), new ArrayList<>(Arrays.asList("kdrt.info", "kdrt.view")));
         this.persistentData = persistentData;
     }
 

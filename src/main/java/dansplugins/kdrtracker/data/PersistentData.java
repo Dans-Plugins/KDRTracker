@@ -4,8 +4,7 @@ import dansplugins.kdrtracker.exceptions.PlayerRecordNotFoundException;
 import org.bukkit.entity.Player;
 import dansplugins.kdrtracker.objects.PlayerRecord;
 
-import java.util.HashSet;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * @author Daniel McCoy Stephenson
@@ -17,8 +16,12 @@ public class PersistentData {
     private final HashSet<PlayerRecord> playerRecords = new HashSet<>();
 
     public boolean playerHasRecord(Player player) {
+        return playerHasRecord(player.getUniqueId());
+    }
+
+    public boolean playerHasRecord(UUID playerUUID) {
         try {
-            getPlayerRecord(player.getUniqueId());
+            getPlayerRecord(playerUUID);
             return true;
         } catch (PlayerRecordNotFoundException e) {
             return false;
@@ -35,7 +38,13 @@ public class PersistentData {
     }
 
     public boolean addPlayerRecord(PlayerRecord playerRecord) {
-        return playerRecords.add(playerRecord);
+        if (!playerHasRecord(playerRecord.getPlayerUUID())) {
+            playerRecords.add(playerRecord);
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 
     public boolean removePlayerRecord(UUID playerUUID) {
@@ -45,6 +54,18 @@ public class PersistentData {
         } catch (PlayerRecordNotFoundException e) {
             return false;
         }
+    }
+
+    public List<Map<String, String>> getPlayerRecordData() {
+        List<Map<String, String>> playerRecordData = new ArrayList<>();
+        for (PlayerRecord playerRecord : playerRecords) {
+            playerRecordData.add(playerRecord.save());
+        }
+        return playerRecordData;
+    }
+
+    public void clearPlayerRecords() {
+        playerRecords.clear();
     }
 
     private void removePlayerRecord(PlayerRecord playerRecord) {

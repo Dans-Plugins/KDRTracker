@@ -15,11 +15,11 @@ import org.bukkit.configuration.file.FileConfiguration;
 /**
  * @author Daniel McCoy Stephenson
  */
-public class LocalConfigService {
+public class ConfigService {
     private final KDRTracker kdrTracker;
     private boolean altered = false;
 
-    public LocalConfigService(KDRTracker kdrTracker) {
+    public ConfigService(KDRTracker kdrTracker) {
         this.kdrTracker = kdrTracker;
     }
 

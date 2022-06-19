@@ -20,7 +20,7 @@ public class DeathListener implements Listener {
     }
 
     @EventHandler
-    public void handle(PlayerDeathEvent event) {
+    public void onPlayerDeath(PlayerDeathEvent event) {
         final Player victim = event.getEntity();
         handleDeath(victim);
 
