@@ -1,8 +1,9 @@
 package dansplugins.kdrtracker;
 
 import dansplugins.kdrtracker.commands.DefaultCommand;
-import dansplugins.kdrtracker.commands.ViewCommand;
+import dansplugins.kdrtracker.commands.InfoCommand;
 import dansplugins.kdrtracker.listeners.DeathListener;
+import dansplugins.kdrtracker.services.StorageService;
 import dansplugins.kdrtracker.utils.Logger;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -11,7 +12,7 @@ import dansplugins.kdrtracker.commands.HelpCommand;
 import dansplugins.kdrtracker.data.PersistentData;
 import dansplugins.kdrtracker.factories.PlayerRecordFactory;
 import dansplugins.kdrtracker.listeners.JoinListener;
-import dansplugins.kdrtracker.services.LocalConfigService;
+import dansplugins.kdrtracker.services.ConfigService;
 import preponderous.ponder.minecraft.bukkit.abs.AbstractPluginCommand;
 import preponderous.ponder.minecraft.bukkit.abs.PonderBukkitPlugin;
 import preponderous.ponder.minecraft.bukkit.services.CommandService;
@@ -28,21 +29,23 @@ public final class KDRTracker extends PonderBukkitPlugin {
     private final String pluginVersion = "v" + getDescription().getVersion();
     private final Logger logger = new Logger(this);
 
-    // services
-    private final CommandService commandService = new CommandService(getPonder());
-    private final LocalConfigService configService = new LocalConfigService(this);
-
     // data
     private final PersistentData persistentData = new PersistentData();
 
     // factories
     private final PlayerRecordFactory playerRecordFactory = new PlayerRecordFactory(persistentData);
 
+    // services
+    private final CommandService commandService = new CommandService(getPonder());
+    private final ConfigService configService = new ConfigService(this);
+    private final StorageService storageService = new StorageService(configService, this, persistentData, playerRecordFactory);
+
     /**
      * This runs when the server starts.
      */
     @Override
     public void onEnable() {
+        storageService.load();
         initializeConfig();
         registerEventHandlers();
         initializeCommandService();
@@ -53,7 +56,7 @@ public final class KDRTracker extends PonderBukkitPlugin {
      */
     @Override
     public void onDisable() {
-
+        storageService.save();
     }
 
     /**
@@ -141,7 +144,7 @@ public final class KDRTracker extends PonderBukkitPlugin {
     private void initializeCommandService() {
         ArrayList<AbstractPluginCommand> commands = new ArrayList<>(Arrays.asList(
                 new HelpCommand(),
-                new ViewCommand(persistentData)
+                new InfoCommand(persistentData)
         ));
         commandService.initialize(commands, "That command wasn't found.");
     }

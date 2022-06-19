@@ -21,7 +21,7 @@ public class HelpCommand extends AbstractPluginCommand {
     @Override
     public boolean execute(CommandSender commandSender) {
         commandSender.sendMessage(AQUA + "/kdrt help - View a list of helpful commands.");
-        commandSender.sendMessage(AQUA + "/kdrt view - View your K/D ratio.");
+        commandSender.sendMessage(AQUA + "/kdrt info - View your kills, deaths and K/D ratio.");
         return true;
     }
 

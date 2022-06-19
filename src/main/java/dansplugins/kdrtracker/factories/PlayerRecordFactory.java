@@ -4,6 +4,8 @@ import org.bukkit.entity.Player;
 import dansplugins.kdrtracker.data.PersistentData;
 import dansplugins.kdrtracker.objects.PlayerRecord;
 
+import java.util.Map;
+
 /**
  * @author Daniel McCoy Stephenson
  * @since June 19th, 2022
@@ -19,6 +21,11 @@ public class PlayerRecordFactory {
 
     public void createPlayerRecord(Player player) {
         PlayerRecord playerRecord = new PlayerRecord(player);
+        persistentData.addPlayerRecord(playerRecord);
+    }
+
+    public void createPlayerRecord(Map<String, String> data) {
+        PlayerRecord playerRecord = new PlayerRecord(data);
         persistentData.addPlayerRecord(playerRecord);
     }
 

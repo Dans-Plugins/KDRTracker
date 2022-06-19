@@ -10,3 +10,5 @@ commands:
 permissions:
   kdrt.help:
     default: true
+  kdrt.info:
+    default: true
