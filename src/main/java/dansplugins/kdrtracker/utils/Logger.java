@@ -7,7 +7,6 @@ import dansplugins.kdrtracker.KDRTracker;
  */
 public class Logger {
     private final KDRTracker kdrTracker;
-    private static Logger instance;
 
     public Logger(KDRTracker kdrTracker) {
         this.kdrTracker = kdrTracker;

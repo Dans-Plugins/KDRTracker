@@ -1,11 +1,11 @@
 package dansplugins.kdrtracker.listeners;
 
+import dansplugins.kdrtracker.data.PersistentData;
+import dansplugins.kdrtracker.factories.PlayerRecordFactory;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
-import dansplugins.kdrtracker.data.PersistentData;
-import dansplugins.kdrtracker.factories.PlayerRecordFactory;
 
 /**
  * @author Daniel McCoy Stephenson

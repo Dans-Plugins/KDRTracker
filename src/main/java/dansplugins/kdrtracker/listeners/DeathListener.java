@@ -1,12 +1,12 @@
 package dansplugins.kdrtracker.listeners;
 
+import dansplugins.kdrtracker.data.PersistentData;
 import dansplugins.kdrtracker.exceptions.PlayerRecordNotFoundException;
+import dansplugins.kdrtracker.objects.PlayerRecord;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
-import dansplugins.kdrtracker.data.PersistentData;
-import dansplugins.kdrtracker.objects.PlayerRecord;
 
 /**
  * @author Daniel McCoy Stephenson

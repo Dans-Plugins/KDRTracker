@@ -1,8 +1,8 @@
 package dansplugins.kdrtracker.data;
 
 import dansplugins.kdrtracker.exceptions.PlayerRecordNotFoundException;
-import org.bukkit.entity.Player;
 import dansplugins.kdrtracker.objects.PlayerRecord;
+import org.bukkit.entity.Player;
 
 import java.util.*;
 

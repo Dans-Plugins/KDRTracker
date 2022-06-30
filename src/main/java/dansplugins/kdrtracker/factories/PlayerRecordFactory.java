@@ -1,8 +1,8 @@
 package dansplugins.kdrtracker.factories;
 
-import org.bukkit.entity.Player;
 import dansplugins.kdrtracker.data.PersistentData;
 import dansplugins.kdrtracker.objects.PlayerRecord;
+import org.bukkit.entity.Player;
 
 import java.util.Map;
 
