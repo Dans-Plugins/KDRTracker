@@ -1,3 +1,8 @@
 # KDR Tracker Configuration
 
-KDR Tracker does not currently use a `config.yml`.
+A `config.yml` is generated in `plugins/KDRTracker/` on first run.
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `version` | String | *(plugin version)* | Plugin version. Do not edit manually. |
+| `debugMode` | Boolean | `false` | Enables verbose debug logging to the console. |
