@@ -30,7 +30,7 @@ public class PersistentData {
 
     public PlayerRecord getPlayerRecord(UUID playerUUID) throws PlayerRecordNotFoundException {
         for (PlayerRecord playerRecord : playerRecords) {
-            if (playerRecord.getPlayerUUID() == playerUUID) {
+            if (playerRecord.getPlayerUUID().equals(playerUUID)) {
                 return playerRecord;
             }
         }
