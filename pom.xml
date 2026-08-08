@@ -6,7 +6,7 @@
 
     <groupId>dansplugins</groupId>
     <artifactId>KDRTracker</artifactId>
-    <version>0.1</version>
+    <version>0.2.0-SNAPSHOT-8-8-2026</version>
     <packaging>jar</packaging>
 
     <name>KDR Tracker</name>
