@@ -38,7 +38,7 @@ public final class KDRTracker extends PonderBukkitPlugin {
     // services
     private final CommandService commandService = new CommandService(getPonder());
     private final ConfigService configService = new ConfigService(this);
-    private final StorageService storageService = new StorageService(configService, this, persistentData, playerRecordFactory);
+    private final StorageService storageService = new StorageService(persistentData, playerRecordFactory);
 
     /**
      * This runs when the server starts.

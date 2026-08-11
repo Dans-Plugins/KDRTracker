@@ -1,6 +1,5 @@
 package dansplugins.kdrtracker.services;
 
-import dansplugins.kdrtracker.KDRTracker;
 import dansplugins.kdrtracker.data.PersistentData;
 import dansplugins.kdrtracker.factories.PlayerRecordFactory;
 import preponderous.ponder.misc.JsonWriterReader;
@@ -15,8 +14,6 @@ import java.util.Map;
  * This class is intended to handle the storage of data for the plugin.
  */
 public class StorageService {
-    private final ConfigService configService;
-    private final KDRTracker kdrTracker;
     private final PersistentData persistentData;
     private final PlayerRecordFactory playerRecordFactory;
 
@@ -25,9 +22,7 @@ public class StorageService {
     private final String FILE_PATH = "./plugins/KDRTracker/";
     private final String PLAYER_RECORDS_FILE_NAME = "playerRecords.json";
 
-    public StorageService(ConfigService configService, KDRTracker kdrTracker, PersistentData persistentData, PlayerRecordFactory playerRecordFactory) {
-        this.configService = configService;
-        this.kdrTracker = kdrTracker;
+    public StorageService(PersistentData persistentData, PlayerRecordFactory playerRecordFactory) {
         this.persistentData = persistentData;
         this.playerRecordFactory = playerRecordFactory;
         jsonWriterReader.initialize(FILE_PATH);
@@ -35,9 +30,6 @@ public class StorageService {
 
     public void save() {
         savePlayerRecords();
-        if (configService.hasBeenAltered()) {
-            kdrTracker.saveConfig();
-        }
     }
 
     public void load() {
