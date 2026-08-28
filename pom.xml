@@ -44,6 +44,29 @@
                         </goals>
                         <configuration>
                             <createDependencyReducedPom>false</createDependencyReducedPom>
+                            <!--
+                                ponder-1.1.jar is itself an uber JAR: it embeds copies of JUnit,
+                                Hamcrest and the JetBrains/IntelliJ annotations. Excluding the
+                                transitive dependencies above does not remove those embedded
+                                copies, so they are filtered out of ponder's contribution here.
+                                None of them are referenced by this plugin at runtime.
+                            -->
+                            <filters>
+                                <filter>
+                                    <artifact>com.github.Preponderous-Software:ponder</artifact>
+                                    <excludes>
+                                        <exclude>junit/**</exclude>
+                                        <exclude>org/junit/**</exclude>
+                                        <exclude>org/hamcrest/**</exclude>
+                                        <exclude>org/jetbrains/**</exclude>
+                                        <exclude>org/intellij/**</exclude>
+                                        <!-- ponder's two root-level licence files cover JUnit and
+                                             Hamcrest, neither of which is shipped any more. -->
+                                        <exclude>LICENSE-junit.txt</exclude>
+                                        <exclude>LICENSE.txt</exclude>
+                                    </excludes>
+                                </filter>
+                            </filters>
                         </configuration>
                     </execution>
                 </executions>
@@ -84,6 +107,25 @@
             <artifactId>ponder</artifactId>
             <version>1.1</version>
             <scope>compile</scope>
+            <!--
+                ponder declares these at compile scope, but none of them are used at runtime by
+                this plugin. They are excluded so the shade plugin does not pull the standalone
+                artifacts into the plugin JAR alongside the copies ponder already embeds.
+            -->
+            <exclusions>
+                <exclusion>
+                    <groupId>junit</groupId>
+                    <artifactId>junit</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.hamcrest</groupId>
+                    <artifactId>hamcrest-core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.jetbrains</groupId>
+                    <artifactId>annotations</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
