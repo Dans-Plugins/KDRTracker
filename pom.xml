@@ -60,6 +60,15 @@
                                         <exclude>org/hamcrest/**</exclude>
                                         <exclude>org/jetbrains/**</exclude>
                                         <exclude>org/intellij/**</exclude>
+                                        <!-- ponder's own test class, which references
+                                             org.junit.Assert and so could not load once JUnit is
+                                             filtered out above. -->
+                                        <exclude>preponderous/ponder/tests/**</exclude>
+                                        <!-- The JetBrains annotations module descriptor that
+                                             ponder absorbed. It names org.jetbrains.annotations
+                                             and org.intellij.lang.annotations, neither of which
+                                             is present any more. -->
+                                        <exclude>META-INF/versions/**</exclude>
                                         <!-- ponder's two root-level licence files cover JUnit and
                                              Hamcrest, neither of which is shipped any more. -->
                                         <exclude>LICENSE-junit.txt</exclude>
