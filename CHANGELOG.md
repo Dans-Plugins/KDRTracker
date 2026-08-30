@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Fixed
 
+- JUnit, Hamcrest and the JetBrains/IntelliJ annotations are no longer bundled into the plugin JAR. They reached the shaded artifact two ways: `ponder` declares them as compile-scope dependencies, and `ponder-1.1.jar` is itself an uber JAR that embeds its own copies of the same classes. Excluding the transitive dependencies alone would have silenced the shade plugin's overlap warnings without removing anything, so ponder's contribution is now filtered as well. None of these libraries are used by KDR Tracker at runtime. The shipped JAR drops from 506 class files (534 KB) to 51 (74 KB), and the duplicate classes that the shade plugin previously resolved arbitrarily — a class-loading hazard on servers running other plugins that shade JUnit — are gone. All 13 plugin classes are retained, as are ponder's own classes apart from the test class it ships (`preponderous.ponder.tests.TestArgumentParser`), which is dropped because it references `org.junit.Assert`.
 - The `Dev Release` workflow now retries publishing the `dev` prerelease before giving up. The release and its tag have to be deleted and recreated for the tag to move to the new commit, and a transient API failure inside that window previously left the repository with no `dev` release at all until the workflow was re-run by hand. Each attempt now starts from a clean slate, and an exhausted retry fails loudly.
 
 ### Added
