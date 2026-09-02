@@ -21,6 +21,7 @@ KDR Tracker is a lightweight Spigot plugin that tracks each player's kills and d
 |------------|---------|-------------|
 | `kdrt.help` | `true` | View the help menu. |
 | `kdrt.info` | `true` | View your K/D stats. |
+| `kdrt.view` | `true` | Alternative to `kdrt.info`; either node grants `/kdrt info` and its `/kdrt view` alias. |
 
 ## Support
 
