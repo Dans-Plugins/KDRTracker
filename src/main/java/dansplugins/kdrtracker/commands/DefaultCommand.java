@@ -16,6 +16,11 @@ public class DefaultCommand extends AbstractPluginCommand {
     private final KDRTracker kdrTracker;
 
     public DefaultCommand(KDRTracker kdrTracker) {
+        // kdrt.default is vestigial and is deliberately not declared in plugin.yml. This command is
+        // not handed to ponder's CommandService: KDRTracker#onCommand constructs it and calls
+        // execute(sender) directly when no sub-command is given, so no permission check ever runs
+        // against this list. The node is kept only so the list is non-empty, because
+        // PermissionChecker#checkPermission denies a sender when it is given no permissions at all.
         super(new ArrayList<>(Arrays.asList("default")), new ArrayList<>(Arrays.asList("kdrt.default")));
         this.kdrTracker = kdrTracker;
     }

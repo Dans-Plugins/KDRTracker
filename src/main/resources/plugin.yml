@@ -12,3 +12,5 @@ permissions:
     default: true
   kdrt.info:
     default: true
+  kdrt.view:
+    default: true
