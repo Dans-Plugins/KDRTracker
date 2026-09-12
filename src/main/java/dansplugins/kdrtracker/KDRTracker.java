@@ -9,6 +9,7 @@ import dansplugins.kdrtracker.listeners.DeathListener;
 import dansplugins.kdrtracker.listeners.JoinListener;
 import dansplugins.kdrtracker.services.ConfigService;
 import dansplugins.kdrtracker.services.StorageService;
+import dansplugins.kdrtracker.trace.TraceClient;
 import dansplugins.kdrtracker.utils.Logger;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -21,6 +22,7 @@ import preponderous.ponder.minecraft.bukkit.tools.EventHandlerRegistry;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 
 /**
  * @author Daniel McCoy Stephenson
@@ -40,6 +42,10 @@ public final class KDRTracker extends PonderBukkitPlugin {
     private final ConfigService configService = new ConfigService(this);
     private final StorageService storageService = new StorageService(persistentData, playerRecordFactory);
 
+    // A no-op until the config has been read, so a command arriving before
+    // onEnable() finishes has something safe to report to.
+    private TraceClient trace = TraceClient.disabled();
+
     /**
      * This runs when the server starts.
      */
@@ -49,6 +55,14 @@ public final class KDRTracker extends PonderBukkitPlugin {
         initializeConfig();
         registerEventHandlers();
         initializeCommandService();
+
+        // usage reporting: one event now, one per command; see config.yml
+        trace = TraceClient.builder(configService.getUsageReportingEndpoint(), getName())
+                .key(configService.getUsageReportingKey())
+                .enabled(configService.isUsageReportingEnabled())
+                .logger(getLogger())
+                .build();
+        trace.report("startup", null, Collections.singletonMap("version", getDescription().getVersion()));
     }
 
     /**
@@ -56,6 +70,7 @@ public final class KDRTracker extends PonderBukkitPlugin {
      */
     @Override
     public void onDisable() {
+        trace.close();
         storageService.save();
     }
 
@@ -69,6 +84,7 @@ public final class KDRTracker extends PonderBukkitPlugin {
      */
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+        trace.report("command", null, Collections.singletonMap("name", cmd.getName()));
         if (args.length == 0) {
             DefaultCommand defaultCommand = new DefaultCommand(this);
             return defaultCommand.execute(sender);
@@ -111,6 +127,12 @@ public final class KDRTracker extends PonderBukkitPlugin {
             performCompatibilityChecks();
         }
         else {
+            // Write the bundled config.yml first so a fresh install starts from it, comments
+            // included (the usage-reporting explanation and opt-out; kept through the save below
+            // on servers whose YamlConfiguration preserves comments), then fill in the options
+            // that are generated rather than bundled. saveDefaultConfig() never rewrites an
+            // existing file, so an upgraded server keeps its config.yml as it was.
+            saveDefaultConfig();
             configService.saveMissingConfigDefaultsIfNotPresent();
         }
     }
