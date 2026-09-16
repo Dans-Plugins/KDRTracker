@@ -13,10 +13,11 @@ import static org.junit.jupiter.api.Assertions.*;
  * Pins the mechanism ConfigService relies on for usage reporting: the bundled
  * config.yml is registered by Bukkit as the defaults for the on-disk file, and
  * the one-argument getters fall through to it. A config.yml written by a
- * version before the usage-reporting block existed is only rewritten when the
- * plugin version changes, so this is what keeps reporting attributed on an
- * upgraded server. The two-argument getters do NOT fall through, which is why
- * ConfigService must never use them for these keys.
+ * version before the usage-reporting block existed is rewritten with the block
+ * on the next start (KDRTracker#performCompatibilityChecks), and this is what
+ * keeps reporting attributed until then, or if that write fails. The
+ * two-argument getters do NOT fall through, which is why ConfigService must
+ * never use them for these keys.
  */
 class BundledConfigDefaultsTest {
 
@@ -71,7 +72,8 @@ class BundledConfigDefaultsTest {
     @Test
     void copyDefaultsWritesTheBlockIntoARewrittenConfig() throws Exception {
         // ConfigService#saveMissingConfigDefaultsIfNotPresent sets copyDefaults(true) before saving,
-        // so a config rewritten on a version change gains the block on disk as well.
+        // so a config rewritten on a version change, or because the block is absent, gains the
+        // block on disk as well.
         YamlConfiguration onDisk = onDiskConfigPredatingTheBlock();
         onDisk.options().copyDefaults(true);
         YamlConfiguration rewritten = new YamlConfiguration();

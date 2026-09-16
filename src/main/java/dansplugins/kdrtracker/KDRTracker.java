@@ -56,12 +56,23 @@ public final class KDRTracker extends PonderBukkitPlugin {
         registerEventHandlers();
         initializeCommandService();
 
-        // usage reporting: one event now, one per command; see config.yml
+        // usage reporting: one event now, one per command; see config.yml. The server-wide
+        // switch in plugins/trace/config.yml is created if absent and honoured.
         trace = TraceClient.builder(configService.getUsageReportingEndpoint(), getName())
                 .key(configService.getUsageReportingKey())
                 .enabled(configService.isUsageReportingEnabled())
+                .serverWideConfig(getDataFolder().getParentFile())
                 .logger(getLogger())
                 .build();
+        if (trace.isEnabled()) {
+            getLogger().info("Usage reporting is on: " + getName() + " sends its name, version and command names to"
+                    + " https://trace.danielstephenson.dev - nothing about players or the server. Turn it off with"
+                    + " usage-reporting.enabled: false in this plugin's config.yml, or for every plugin with"
+                    + " enabled: false in plugins/trace/config.yml."
+                    + " Details: https://github.com/Stephenson-Software/trace#usage-reporting");
+        } else {
+            getLogger().info("Usage reporting is off (" + trace.disabledReason() + ").");
+        }
         trace.report("startup", null, Collections.singletonMap("version", getDescription().getVersion()));
     }
 
@@ -142,7 +153,11 @@ public final class KDRTracker extends PonderBukkitPlugin {
     }
 
     private void performCompatibilityChecks() {
-        if (isVersionMismatched()) {
+        // The usage-reporting block is also what triggers a rewrite: a config.yml that predates
+        // it would otherwise keep reporting through the bundled defaults, with no visible opt-out,
+        // until the plugin version happened to change. copyDefaults(true) in the save below copies
+        // the block in with the bundled values.
+        if (isVersionMismatched() || !configService.isSet("usage-reporting")) {
             configService.saveMissingConfigDefaultsIfNotPresent();
         }
         reloadConfig();
