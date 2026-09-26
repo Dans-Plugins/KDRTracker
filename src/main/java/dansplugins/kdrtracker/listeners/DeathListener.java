@@ -3,6 +3,7 @@ package dansplugins.kdrtracker.listeners;
 import dansplugins.kdrtracker.data.PersistentData;
 import dansplugins.kdrtracker.exceptions.PlayerRecordNotFoundException;
 import dansplugins.kdrtracker.objects.PlayerRecord;
+import dansplugins.kdrtracker.utils.Logger;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -14,9 +15,11 @@ import org.bukkit.event.entity.PlayerDeathEvent;
  */
 public class DeathListener implements Listener {
     private final PersistentData persistentData;
+    private final Logger logger;
 
-    public DeathListener(PersistentData persistentData) {
+    public DeathListener(PersistentData persistentData, Logger logger) {
         this.persistentData = persistentData;
+        this.logger = logger;
     }
 
     @EventHandler
@@ -34,11 +37,12 @@ public class DeathListener implements Listener {
         try {
             victimsPlayerRecord = persistentData.getPlayerRecord(victim.getUniqueId());
         } catch(PlayerRecordNotFoundException e) {
-            // error
+            logger.log("No record for " + victim.getName() + " (" + victim.getUniqueId() + "); death not recorded.");
             return;
         }
 
         victimsPlayerRecord.incrementDeaths();
+        logger.log("Recorded a death for " + victim.getName() + "; deaths now " + victimsPlayerRecord.getDeaths() + ".");
         victim.sendMessage("You now have " + victimsPlayerRecord.getDeaths() + " deaths.");
     }
 
@@ -51,11 +55,12 @@ public class DeathListener implements Listener {
         try {
             killersPlayerRecord = persistentData.getPlayerRecord(killer.getUniqueId());
         } catch(PlayerRecordNotFoundException e) {
-            // error
+            logger.log("No record for " + killer.getName() + " (" + killer.getUniqueId() + "); kill not recorded.");
             return;
         }
 
         killersPlayerRecord.incrementKills();
+        logger.log("Recorded a kill for " + killer.getName() + "; kills now " + killersPlayerRecord.getKills() + ".");
         killer.sendMessage("You now have " + killersPlayerRecord.getKills() + " kills.");
     }
 }
