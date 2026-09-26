@@ -29,7 +29,7 @@ import java.util.Collections;
  */
 public final class KDRTracker extends PonderBukkitPlugin {
     private final String pluginVersion = "v" + getDescription().getVersion();
-    private final Logger logger = new Logger(this);
+    private final Logger logger = new Logger(getLogger(), this::isDebugEnabled);
 
     // data
     private final PersistentData persistentData = new PersistentData();
@@ -40,7 +40,7 @@ public final class KDRTracker extends PonderBukkitPlugin {
     // services
     private final CommandService commandService = new CommandService(getPonder());
     private final ConfigService configService = new ConfigService(this);
-    private final StorageService storageService = new StorageService(persistentData, playerRecordFactory);
+    private final StorageService storageService = new StorageService(persistentData, playerRecordFactory, logger);
 
     // A no-op until the config has been read, so a command arriving before
     // onEnable() finishes has something safe to report to.
@@ -169,8 +169,8 @@ public final class KDRTracker extends PonderBukkitPlugin {
     private void registerEventHandlers() {
         EventHandlerRegistry eventHandlerRegistry = new EventHandlerRegistry();
         ArrayList<Listener> listeners = new ArrayList<>(Arrays.asList(
-                new JoinListener(persistentData, playerRecordFactory),
-                new DeathListener(persistentData)
+                new JoinListener(persistentData, playerRecordFactory, logger),
+                new DeathListener(persistentData, logger)
         ));
         eventHandlerRegistry.registerEventHandlers(listeners, this);
     }
