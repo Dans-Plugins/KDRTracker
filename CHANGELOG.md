@@ -25,6 +25,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Changed
 
 - The K/D ratio shown by `/kdrt info` is now rounded to two decimal places instead of being printed at full floating-point precision, so a player with 1 kill and 3 deaths sees `K/D Ratio: 0.33` rather than `K/D Ratio: 0.3333333333333333`. The stored kill and death counts and the underlying ratio calculation are unchanged.
+- The vendored trace client is now 0.3.0. `plugins/trace/config.yml` can now carry a `tags:` block whose entries are added to every usage event the plugin sends, so a test server can mark its own events (the release gates write `ci: "true"`) and be left out of the figures for real installations. Nothing changes for a server whose `plugins/trace/config.yml` has no `tags:` block.
 
 ## [0.2.0-SNAPSHOT-8-8-2026] – 2026-08-08
 
