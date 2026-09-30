@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Changed
+
+- The vendored trace client is now 0.4.0, and every usage event now carries the plugin version, `command` events included; before, only `startup` did.
+
 ### Fixed
 
 - `debugMode: true` in `config.yml` now does something. The option had been written into every generated config but nothing logged through it, so turning it on produced no output. With it on, the plugin logs `[DEBUG]` lines through its own console logger when player records are loaded or saved, when a record is created for a joining player, and when a kill or death is recorded or skipped because the player has no record. The debug logger previously wrote to standard output under the prefix `[ExamplePonderPlugin]`, left over from the template the plugin was started from; it now uses the plugin's logger and the `[KDRTracker]` prefix that comes with it.
