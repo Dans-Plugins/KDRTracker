@@ -51,7 +51,7 @@ Issues are grouped into [milestones](https://github.com/Dans-Plugins/KDRTracker/
 
     mvn clean package
 
-Place the built JAR from `target/` in your local Spigot server's `plugins/` folder.
+This also runs the JUnit tests under `src/test/java`; the build fails if any test fails. Place the built JAR from `target/` in your local Spigot server's `plugins/` folder.
 
 ## Questions
 
