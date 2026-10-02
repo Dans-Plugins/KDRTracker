@@ -1,3 +1,7 @@
+# Minutes between saves of player records to playerRecords.json. Records are
+# also saved when the plugin is disabled; this bounds what a crash or a killed
+# server can lose. Set to 0 to save only on disable.
+saveInterval: 5
 # Usage reporting. When the plugin is enabled, and each time one of its
 # commands is used, a small event (plugin name, event name, plugin version
 # and, for a command, its name) is sent to the author's trace server so it is known which
