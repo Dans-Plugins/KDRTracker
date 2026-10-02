@@ -16,6 +16,7 @@ import org.bukkit.configuration.file.FileConfiguration;
  * @author Daniel McCoy Stephenson
  */
 public class ConfigService {
+    private static final String SAVE_INTERVAL_KEY = "saveInterval";
     private static final String USAGE_REPORTING_ENABLED_KEY = "usage-reporting.enabled";
     private static final String USAGE_REPORTING_ENDPOINT_KEY = "usage-reporting.endpoint";
     private static final String USAGE_REPORTING_KEY_KEY = "usage-reporting.key";
@@ -56,6 +57,12 @@ public class ConfigService {
 
     public String getString(String option) {
         return getConfig().getString(option);
+    }
+
+    /** Minutes between autosaves of player records; zero or less turns autosaving off. */
+    public int getSaveInterval() {
+        // one-argument getter, so a config.yml that predates the option reads the bundled default
+        return getConfig().getInt(SAVE_INTERVAL_KEY);
     }
 
     // The one-argument getters, deliberately. Bukkit registers the jar's

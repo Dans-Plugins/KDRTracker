@@ -61,6 +61,16 @@ class BundledConfigDefaultsTest {
     }
 
     @Test
+    void saveIntervalFallsThroughToTheBundledFiveMinutes() throws Exception {
+        // ConfigService#getSaveInterval uses the one-argument getInt, so a config.yml written before
+        // the option existed autosaves every 5 minutes rather than reading 0 and never autosaving.
+        assertEquals(5, bundledDefaults().getInt("saveInterval"));
+        YamlConfiguration onDisk = onDiskConfigPredatingTheBlock();
+        assertFalse(onDisk.isSet("saveInterval"));
+        assertEquals(5, onDisk.getInt("saveInterval"));
+    }
+
+    @Test
     void twoArgumentGettersReturnTheirFallbackInsteadOfTheBundledDefaults() throws Exception {
         // Measured, not assumed: this is the trap that would silently turn reporting off on every
         // upgraded server if ConfigService ever switched to the two-argument getters.

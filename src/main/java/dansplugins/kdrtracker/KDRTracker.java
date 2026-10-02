@@ -7,6 +7,7 @@ import dansplugins.kdrtracker.data.PersistentData;
 import dansplugins.kdrtracker.factories.PlayerRecordFactory;
 import dansplugins.kdrtracker.listeners.DeathListener;
 import dansplugins.kdrtracker.listeners.JoinListener;
+import dansplugins.kdrtracker.services.AutoSaveService;
 import dansplugins.kdrtracker.services.ConfigService;
 import dansplugins.kdrtracker.services.StorageService;
 import dansplugins.kdrtracker.trace.TraceClient;
@@ -41,6 +42,7 @@ public final class KDRTracker extends PonderBukkitPlugin {
     private final CommandService commandService = new CommandService(getPonder());
     private final ConfigService configService = new ConfigService(this);
     private final StorageService storageService = new StorageService(persistentData, playerRecordFactory, logger);
+    private final AutoSaveService autoSaveService = new AutoSaveService(storageService);
 
     // A no-op until the config has been read, so a command arriving before
     // onEnable() finishes has something safe to report to.
@@ -55,6 +57,7 @@ public final class KDRTracker extends PonderBukkitPlugin {
         initializeConfig();
         registerEventHandlers();
         initializeCommandService();
+        autoSaveService.schedule(getServer().getScheduler(), this, configService.getSaveInterval());
 
         // usage reporting: one event now, one per command; see config.yml. The server-wide
         // switch in plugins/trace/config.yml is created if absent and honoured.

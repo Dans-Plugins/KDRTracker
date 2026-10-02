@@ -6,6 +6,7 @@ A `config.yml` is generated in `plugins/KDRTracker/` on first run.
 |--------|------|---------|-------------|
 | `version` | String | *(plugin version)* | Plugin version. Do not edit manually. |
 | `debugMode` | Boolean | `false` | Logs `[DEBUG]` lines to the console, under the plugin's own prefix, when player records are loaded or saved, when a record is created for a joining player, and when a kill or death is recorded — or skipped because the player has no record. Takes effect on the next server start. |
+| `saveInterval` | Integer | `5` | Minutes between saves of player records to `playerRecords.json`, on top of the save when the plugin is disabled. Bounds how many kills and deaths a crash or a killed server can lose. `0` or less saves only on disable. Takes effect on the next server start. |
 | `usage-reporting.enabled` | Boolean | `true` | Whether the plugin reports usage events (see below). Set to `false` to turn it off. |
 | `usage-reporting.endpoint` | String | `https://trace.danielstephenson.dev` | The trace server events are sent to. |
 | `usage-reporting.key` | String | the plugin's key | Identifies this plugin to the trace server so reports are attributed to it. Not a secret: it ships in the default config and can only report as KDRTracker. Empty means reporting is off regardless of `enabled`. |
