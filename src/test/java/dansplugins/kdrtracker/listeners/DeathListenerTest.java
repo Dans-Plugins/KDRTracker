@@ -58,7 +58,7 @@ class DeathListenerTest {
 
         assertEquals(1, victimsRecord.getDeaths());
         assertEquals(0, victimsRecord.getKills());
-        verify(victim).sendMessage("You now have 1 deaths.");
+        verify(victim).sendMessage("You now have 1 death.");
     }
 
     @Test
@@ -75,8 +75,8 @@ class DeathListenerTest {
         assertEquals(0, victimsRecord.getKills());
         assertEquals(1, killersRecord.getKills());
         assertEquals(0, killersRecord.getDeaths());
-        verify(victim).sendMessage("You now have 1 deaths.");
-        verify(killer).sendMessage("You now have 1 kills.");
+        verify(victim).sendMessage("You now have 1 death.");
+        verify(killer).sendMessage("You now have 1 kill.");
     }
 
     @Test
@@ -120,5 +120,13 @@ class DeathListenerTest {
         assertFalse(persistentData.playerHasRecord(killer));
         assertEquals(1, victimsRecord.getDeaths());
         verify(killer, never()).sendMessage(anyString());
+    }
+
+    @Test
+    void countOf_usesTheSingularOnlyForOne() {
+        assertEquals("0 kills", DeathListener.countOf(0, "kill", "kills"));
+        assertEquals("1 kill", DeathListener.countOf(1, "kill", "kills"));
+        assertEquals("2 kills", DeathListener.countOf(2, "kill", "kills"));
+        assertEquals("1 death", DeathListener.countOf(1, "death", "deaths"));
     }
 }

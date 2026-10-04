@@ -43,7 +43,7 @@ public class DeathListener implements Listener {
 
         victimsPlayerRecord.incrementDeaths();
         logger.log("Recorded a death for " + victim.getName() + "; deaths now " + victimsPlayerRecord.getDeaths() + ".");
-        victim.sendMessage("You now have " + victimsPlayerRecord.getDeaths() + " deaths.");
+        victim.sendMessage("You now have " + countOf(victimsPlayerRecord.getDeaths(), "death", "deaths") + ".");
     }
 
     private void handleKill(Player killer) {
@@ -61,6 +61,13 @@ public class DeathListener implements Listener {
 
         killersPlayerRecord.incrementKills();
         logger.log("Recorded a kill for " + killer.getName() + "; kills now " + killersPlayerRecord.getKills() + ".");
-        killer.sendMessage("You now have " + killersPlayerRecord.getKills() + " kills.");
+        killer.sendMessage("You now have " + countOf(killersPlayerRecord.getKills(), "kill", "kills") + ".");
+    }
+
+    /**
+     * Formats a count with the noun that agrees with it: "1 kill", "2 kills", "0 kills".
+     */
+    static String countOf(int count, String singular, String plural) {
+        return count + " " + (count == 1 ? singular : plural);
     }
 }
