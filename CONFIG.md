@@ -4,7 +4,7 @@ A `config.yml` is generated in `plugins/KDRTracker/` on first run.
 
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
-| `version` | String | *(plugin version)* | Plugin version. Do not edit manually. |
+| `version` | String | *(plugin version, prefixed with `v`, e.g. `v0.3.1`)* | Plugin version that last wrote the file. Do not edit manually: whenever it differs from the running version, the next start overwrites it and adds any options the file is missing. |
 | `debugMode` | Boolean | `false` | Logs `[DEBUG]` lines to the console, under the plugin's own prefix, when player records are loaded or saved, when a record is created for a joining player, and when a kill or death is recorded — or skipped because the player has no record. Takes effect on the next server start. |
 | `saveInterval` | Integer | `5` | Minutes between saves of player records to `playerRecords.json`, on top of the save when the plugin is disabled. Bounds how many kills and deaths a crash or a killed server can lose. `0` or less saves only on disable. Takes effect on the next server start. |
 | `usage-reporting.enabled` | Boolean | `true` | Whether the plugin reports usage events (see below). Set to `false` to turn it off. |
