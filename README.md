@@ -1,4 +1,9 @@
 # KDR Tracker
+
+![Kill notices after two PvP wins, then /kdrt info showing 2 kills, 0 deaths and a ratio of 2.00](docs/images/kdr-info.png)
+
+*Real in-game output from KDR Tracker 0.3.1 on a local throwaway Paper 1.21.11 test server: the commands were typed by a scripted bot client, and the chat it received is drawn as Minecraft-style chat (typed commands appear in the input bars; grey lines say what happened between commands).*
+
 This open source minecraft plugin is intended to keep track of players' kill/death ratios. 
 
 ## Supported Minecraft Versions
