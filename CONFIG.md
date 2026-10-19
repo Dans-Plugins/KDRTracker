@@ -16,7 +16,8 @@ A `config.yml` is generated in `plugins/KDRTracker/` on first run.
 When the plugin is enabled, and each time one of its commands is used, a small event is sent to the
 author's [trace](https://github.com/Stephenson-Software/trace-client-java) server so it is known which
 plugins are actually in use. An event carries the plugin's name, the event name (`startup` or
-`command`), the plugin version, and for a command the command name, plus a random server ID (the
+`command`), the plugin version, and for a command the base command name (`kdrt` or `kdrtracker`,
+never the sub-command or anything typed after it), plus a random server ID (the
 `server-id` line in `plugins/trace/config.yml`, which identifies no person, account or IP address;
 deleting the line gets a new one) — nothing about players or the world. Sending happens off the main
 thread, never delays a tick, and is dropped silently if the
