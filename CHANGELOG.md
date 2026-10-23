@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## [0.3.2] – 2026-10-23
+
+No change in plugin behaviour, configuration or stored data from 0.3.1; this release adds tests and documentation only.
+
 ## [0.3.1] – 2026-10-11
 
 ### Changed
