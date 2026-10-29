@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## [0.4.0] – 2026-10-29
+
 ### Changed
 
 - The vendored trace client is now 0.7.0, which coalesces repeated usage events. The first report of an event is still sent at once; identical reports in the next 60 seconds are only counted, and are sent as one event tagged `coalesced` with the count when that minute ends (or when the plugin is disabled). So `/kdrt` used ten times in a minute sends two events instead of ten. `startup` is never held back. Nothing else about what is sent, or how to turn it off, changes. Details: https://github.com/Stephenson-Software/trace-client-java/releases/tag/0.7.0.
