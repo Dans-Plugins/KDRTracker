@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## [0.4.2] – 2026-10-31
+
+No change in plugin behaviour, configuration or stored data from 0.4.1; this release changes documentation and the comments in the bundled `config.yml` only. Those now say that a usage event is sent when a player uses one of the plugin's commands, matching the 0.4.1 change.
+
 ## [0.4.1] – 2026-10-30
 
 ### Changed
