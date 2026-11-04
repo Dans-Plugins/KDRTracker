@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Fixed
+
+- Kills and deaths now survive a restart. `playerRecords.json` was written to `plugins/KDRTracker/`, but when enabled the plugin looked for it in the server's working directory, found nothing and started with no records, so every player came back with a new zero record and the next save replaced the file. Records are now read from where they are written. Stats already lost cannot be recovered. Because the file is now actually read, a `playerRecords.json` that is not valid JSON fails with an error when the plugin is enabled instead of being ignored.
+- On a first start, the `config.yml` written out now keeps the bundled comments, including the explanation of usage reporting and how to turn it off. The save that follows was dropping them. An existing `config.yml` is not changed.
+
 ## [0.4.2] – 2026-10-31
 
 No change in plugin behaviour, configuration or stored data from 0.4.1; this release changes documentation and the comments in the bundled `config.yml` only. Those now say that a usage event is sent when a player uses one of the plugin's commands, matching the 0.4.1 change.

@@ -27,10 +27,12 @@ import static org.mockito.Mockito.*;
  *
  * Pins how player records travel between PersistentData and
  * playerRecords.json. ponder's JsonWriterReader is replaced at construction,
- * so nothing is read from or written to ./plugins/KDRTracker/.
+ * so nothing is read from or written to ./plugins/KDRTracker/; that the real
+ * reader finds what was written is StorageServicePersistenceTest's job.
  */
 class StorageServiceTest {
     private static final String PLAYER_RECORDS_FILE_NAME = "playerRecords.json";
+    private static final String PLAYER_RECORDS_FILE_PATH = "./plugins/KDRTracker/playerRecords.json";
 
     private MockedConstruction<JsonWriterReader> jsonWriterReaders;
     private PersistentData persistentData;
@@ -64,7 +66,7 @@ class StorageServiceTest {
     }
 
     private void givenTheFileHolds(List<Map<String, String>> data) {
-        doReturn(data).when(jsonWriterReader()).loadDataFromFilename(PLAYER_RECORDS_FILE_NAME);
+        doReturn(data).when(jsonWriterReader()).loadDataFromFilename(PLAYER_RECORDS_FILE_PATH);
     }
 
     @Test

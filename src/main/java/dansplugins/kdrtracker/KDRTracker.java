@@ -150,8 +150,7 @@ public final class KDRTracker extends PonderBukkitPlugin {
             // on servers whose YamlConfiguration preserves comments), then fill in the options
             // that are generated rather than bundled. saveDefaultConfig() never rewrites an
             // existing file, so an upgraded server keeps its config.yml as it was.
-            saveDefaultConfig();
-            configService.saveMissingConfigDefaultsIfNotPresent();
+            configService.saveBundledConfig();
         }
     }
 

@@ -21,13 +21,21 @@ public class StorageService {
 
     private final JsonWriterReader jsonWriterReader = new JsonWriterReader();
 
-    private final String FILE_PATH = "./plugins/KDRTracker/";
+    private final String FILE_PATH;
     private final String PLAYER_RECORDS_FILE_NAME = "playerRecords.json";
 
     public StorageService(PersistentData persistentData, PlayerRecordFactory playerRecordFactory, Logger logger) {
+        this(persistentData, playerRecordFactory, logger, "./plugins/KDRTracker/");
+    }
+
+    /**
+     * @param filePath The folder the records file is kept in, ending with a separator.
+     */
+    StorageService(PersistentData persistentData, PlayerRecordFactory playerRecordFactory, Logger logger, String filePath) {
         this.persistentData = persistentData;
         this.playerRecordFactory = playerRecordFactory;
         this.logger = logger;
+        this.FILE_PATH = filePath;
         jsonWriterReader.initialize(FILE_PATH);
     }
 
@@ -48,7 +56,9 @@ public class StorageService {
     public void loadPlayerRecords() {
         persistentData.clearPlayerRecords();
 
-        List<Map<String, String>> data = jsonWriterReader.loadDataFromFilename(PLAYER_RECORDS_FILE_NAME);
+        // The full path, unlike writeOutFiles: ponder's loader ignores the folder given to
+        // initialize(), so a bare name would be looked up in the server's working directory.
+        List<Map<String, String>> data = jsonWriterReader.loadDataFromFilename(FILE_PATH + PLAYER_RECORDS_FILE_NAME);
 
         for (Map<String, String> playerRecordData : data) {
             playerRecordFactory.createPlayerRecord(playerRecordData);

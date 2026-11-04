@@ -4,6 +4,7 @@ import dansplugins.kdrtracker.KDRTracker;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InOrder;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -32,6 +33,20 @@ class ConfigServiceTest {
         when(kdrTracker.getConfig()).thenReturn(config);
         when(kdrTracker.getVersion()).thenReturn(PLUGIN_VERSION);
         configService = new ConfigService(kdrTracker);
+    }
+
+    @Test
+    void saveBundledConfig_reloadsTheWrittenFileBeforeSaving() {
+        // A copy read before the file existed would otherwise overwrite it without its comments.
+        // The API this builds against has no YAML comments, so the order is what can be pinned.
+        configService.saveBundledConfig();
+
+        InOrder order = inOrder(kdrTracker);
+        order.verify(kdrTracker).saveDefaultConfig();
+        order.verify(kdrTracker).reloadConfig();
+        order.verify(kdrTracker).saveConfig();
+        assertEquals(PLUGIN_VERSION, config.getString("version"));
+        assertTrue(config.isSet("debugMode"));
     }
 
     @Test
