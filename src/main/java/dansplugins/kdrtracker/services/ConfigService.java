@@ -28,6 +28,21 @@ public class ConfigService {
         this.kdrTracker = kdrTracker;
     }
 
+    /**
+     * Starts a fresh install from the bundled config.yml, then fills in the
+     * options that are generated rather than bundled.
+     */
+    public void saveBundledConfig() {
+        kdrTracker.saveDefaultConfig();
+        // Something may have read the config before the file existed (the debug
+        // switch, while records load), and saveDefaultConfig() leaves that copy in
+        // memory. Saving it would replace the file just written with one that has
+        // the values but not the comments: the usage-reporting explanation and
+        // opt-out among them.
+        kdrTracker.reloadConfig();
+        saveMissingConfigDefaultsIfNotPresent();
+    }
+
     public void saveMissingConfigDefaultsIfNotPresent() {
         // set version
         if (!getConfig().isString("version")) {
