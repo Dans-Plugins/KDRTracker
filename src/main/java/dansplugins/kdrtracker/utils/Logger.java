@@ -24,4 +24,9 @@ public class Logger {
         }
     }
 
+    /** Writes a message an operator has to see, whether or not debugMode is on. */
+    public void error(String message) {
+        output.severe(message);
+    }
+
 }

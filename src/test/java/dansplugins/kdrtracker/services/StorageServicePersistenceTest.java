@@ -7,8 +7,14 @@ import dansplugins.kdrtracker.objects.PlayerRecord;
 import dansplugins.kdrtracker.utils.Logger;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -73,5 +79,60 @@ class StorageServicePersistenceTest {
         storageServiceFor(persistentData).load();
 
         assertTrue(persistentData.getPlayerRecordData().isEmpty());
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "[{\"playerUUID\":\"6",
+            "not json",
+            "null",
+            "",
+            "[{\"playerUUID\":\"00000000-0000-0000-0000-000000000001\",\"kills\":\"six\",\"deaths\":\"3\"}]",
+            "[{\"playerUUID\":\"00000000-0000-0000-0000-000000000001\"}]",
+            "[{\"playerUUID\":\"not-a-uuid\",\"kills\":\"6\",\"deaths\":\"3\"}]"
+    })
+    void aFileThatCannotBeUsed_failsTheLoad_andLaterSavesLeaveItAlone(String contents) throws IOException {
+        Path file = new File(dataFolder, "playerRecords.json").toPath();
+        Files.write(file, contents.getBytes(StandardCharsets.UTF_8));
+        PersistentData persistentData = new PersistentData();
+        StorageService storageService = storageServiceFor(persistentData);
+
+        assertFalse(storageService.load());
+        assertTrue(persistentData.getPlayerRecordData().isEmpty());
+
+        storageService.save();
+
+        assertEquals(contents, new String(Files.readAllBytes(file), StandardCharsets.UTF_8));
+    }
+
+    @Test
+    void aBadEntryAfterGoodOnes_leavesNoneOfTheRecordsInMemory() throws IOException {
+        Path file = new File(dataFolder, "playerRecords.json").toPath();
+        String contents = "[{\"playerUUID\":\"" + UUID.randomUUID() + "\",\"kills\":\"6\",\"deaths\":\"3\"},"
+                + "{\"playerUUID\":\"" + UUID.randomUUID() + "\",\"kills\":\"six\",\"deaths\":\"3\"}]";
+        Files.write(file, contents.getBytes(StandardCharsets.UTF_8));
+        PersistentData persistentData = new PersistentData();
+
+        assertFalse(storageServiceFor(persistentData).load());
+
+        assertTrue(persistentData.getPlayerRecordData().isEmpty());
+    }
+
+    @Test
+    void aFileRepairedBeforeTheNextLoad_isReadAndSavedAgain() throws IOException, PlayerRecordNotFoundException {
+        Path file = new File(dataFolder, "playerRecords.json").toPath();
+        Files.write(file, "not json".getBytes(StandardCharsets.UTF_8));
+        UUID playerUUID = UUID.randomUUID();
+        PersistentData persistentData = new PersistentData();
+        StorageService storageService = storageServiceFor(persistentData);
+        assertFalse(storageService.load());
+
+        Files.write(file, ("[{\"playerUUID\":\"" + playerUUID + "\",\"kills\":\"6\",\"deaths\":\"3\"}]").getBytes(StandardCharsets.UTF_8));
+
+        assertTrue(storageService.load());
+        assertEquals(6, persistentData.getPlayerRecord(playerUUID).getKills());
+        persistentData.getPlayerRecord(playerUUID).incrementKills();
+        storageService.save();
+        assertTrue(new String(Files.readAllBytes(file), StandardCharsets.UTF_8).contains("\"7\""));
     }
 }

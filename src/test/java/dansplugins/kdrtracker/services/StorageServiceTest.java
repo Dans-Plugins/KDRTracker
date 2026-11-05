@@ -141,6 +141,36 @@ class StorageServiceTest {
     }
 
     @Test
+    void load_whenTheFileIsUsable_returnsTrue() {
+        givenTheFileHolds(new ArrayList<>());
+
+        assertTrue(storageService.load());
+    }
+
+    @Test
+    void load_whenTheFileCannotBeUsed_namesItAtSevereEvenWithDebugOff() {
+        Logger debugOff = new Logger(output, () -> false);
+        StorageService quietStorageService = new StorageService(persistentData, new PlayerRecordFactory(persistentData), debugOff);
+        JsonWriterReader reader = jsonWriterReaders.constructed().get(1);
+        doThrow(new IllegalStateException("bad")).when(reader).loadDataFromFilename(PLAYER_RECORDS_FILE_PATH);
+
+        assertFalse(quietStorageService.load());
+
+        verify(output).severe(contains(PLAYER_RECORDS_FILE_PATH));
+    }
+
+    @Test
+    void save_afterAFailedLoad_writesNothingAndSaysSo() {
+        doThrow(new IllegalStateException("bad")).when(jsonWriterReader()).loadDataFromFilename(PLAYER_RECORDS_FILE_PATH);
+        storageService.load();
+
+        storageService.save();
+
+        verify(jsonWriterReader(), never()).writeOutFiles(any(), any());
+        verify(output).severe(startsWith("Not saving player records"));
+    }
+
+    @Test
     @SuppressWarnings("unchecked")
     void save_writesEveryRecordInMemoryToThePlayerRecordsFile() {
         UUID first = UUID.randomUUID();
