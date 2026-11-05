@@ -54,7 +54,13 @@ public final class KDRTracker extends PonderBukkitPlugin {
      */
     @Override
     public void onEnable() {
-        storageService.load();
+        // Stay off rather than run without records: every player would look reset to zero, and
+        // anything they earned could not be combined with the file once it is repaired.
+        if (!storageService.load()) {
+            getLogger().severe(getName() + " is disabling itself because its player records could not be read.");
+            getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
         initializeConfig();
         registerEventHandlers();
         initializeCommandService();
@@ -69,11 +75,7 @@ public final class KDRTracker extends PonderBukkitPlugin {
                 .logger(getLogger())
                 .build();
         if (trace.isEnabled()) {
-            getLogger().info("Usage reporting is on: " + getName() + " sends its name, version and command names to"
-                    + " https://trace.danielstephenson.dev, plus a random server ID (server-id in plugins/trace/config.yml) - nothing about players. Turn it off with"
-                    + " usage-reporting.enabled: false in this plugin's config.yml, or for every plugin with"
-                    + " enabled: false in plugins/trace/config.yml."
-                    + " Details: https://danielstephenson.dev/usage-reporting");
+            getLogger().info(usageReportingNotice(getName(), configService.getUsageReportingEndpoint()));
         } else {
             getLogger().info("Usage reporting is off (" + trace.disabledReason() + ").");
         }
@@ -138,6 +140,17 @@ public final class KDRTracker extends PonderBukkitPlugin {
      */
     public boolean isDebugEnabled() {
         return configService.getBoolean("debugMode");
+    }
+
+    /**
+     * The console notice for when reporting is on, naming the server events really go to.
+     */
+    static String usageReportingNotice(String pluginName, String endpoint) {
+        return "Usage reporting is on: " + pluginName + " sends its name, version and command names to "
+                + endpoint + ", plus a random server ID (server-id in plugins/trace/config.yml) - nothing about players. Turn it off with"
+                + " usage-reporting.enabled: false in this plugin's config.yml, or for every plugin with"
+                + " enabled: false in plugins/trace/config.yml."
+                + " Details: https://danielstephenson.dev/usage-reporting";
     }
 
     private void initializeConfig() {

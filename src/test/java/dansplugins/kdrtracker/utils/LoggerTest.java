@@ -17,7 +17,8 @@ import static org.junit.jupiter.api.Assertions.*;
  * @author Daniel McCoy Stephenson
  *
  * Covers the debugMode gate: messages reach the plugin's logger only while
- * the switch reads true, and the switch is consulted on every call.
+ * the switch reads true, and the switch is consulted on every call. Errors
+ * do not pass through the gate.
  */
 class LoggerTest {
     private final List<LogRecord> records = new ArrayList<>();
@@ -82,5 +83,16 @@ class LoggerTest {
 
         assertEquals(1, records.size());
         assertEquals("[DEBUG] second", records.get(0).getMessage());
+    }
+
+    @Test
+    void error_whenDebugDisabled_stillWritesTheMessageAtSevereWithoutADebugPrefix() {
+        Logger logger = new Logger(output, () -> false);
+
+        logger.error("Could not read the file");
+
+        assertEquals(1, records.size());
+        assertEquals(Level.SEVERE, records.get(0).getLevel());
+        assertEquals("Could not read the file", records.get(0).getMessage());
     }
 }

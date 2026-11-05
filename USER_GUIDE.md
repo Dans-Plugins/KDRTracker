@@ -22,6 +22,8 @@ KDR Tracker is a lightweight Spigot plugin that tracks each player's kills and d
 
 Kill and death counts are kept in `plugins/KDRTracker/playerRecords.json`. The file is read when the plugin is enabled and written when it is disabled, such as on a normal server stop, and every `saveInterval` minutes in between (5 by default; see [CONFIG.md](CONFIG.md)). If the server crashes or is killed without shutting down, only the stats recorded since the last of those saves are lost. With `saveInterval: 0` the file is written only on disable, so a crash loses every stat recorded since the last start.
 
+If `playerRecords.json` cannot be used — it is not valid JSON, it is empty, or an entry has a count or player ID that cannot be read — the plugin logs an error naming the file, leaves the file as it is and disables itself, so nothing is tracked and `/kdrt` is unavailable until the next start. Repair the file or restore it from a backup, then restart the server. If there is nothing to recover, delete the file and the plugin starts with no records.
+
 ## Configuration
 
 A `config.yml` is written to `plugins/KDRTracker/` on first start. Usage reporting is on by default and can be turned off there; see [CONFIG.md](CONFIG.md) for every option and the opt-out.
