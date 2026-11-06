@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## [0.6.0] – 2026-11-06
+
 ### Fixed
 
 - A `playerRecords.json` that cannot be used no longer risks being overwritten. In 0.5.0 a damaged file stopped the plugin part-way through being enabled, and the save when it was disabled could then replace the file. The plugin now logs an error naming the file, leaves the file as it is and disables itself; repair the file or restore it from a backup, then restart the server. An empty file counts as damaged; a missing file is still a first start.
