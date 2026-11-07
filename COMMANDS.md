@@ -1,6 +1,6 @@
 # KDR Tracker Commands
 
-All commands use `/kdrt` or `/kdrtracker` as the base.
+All commands use `/kdrt` or `/kdrtracker` as the base. Each can also be typed with the plugin's name in front (`/kdrtracker:kdrt info`), which is how to reach this plugin if another one also uses `/kdrt`.
 
 | Command | Description | Permission |
 |---------|-------------|------------|

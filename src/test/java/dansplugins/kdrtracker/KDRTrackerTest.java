@@ -1,16 +1,31 @@
 package dansplugins.kdrtracker;
 
+import dansplugins.kdrtracker.commands.HelpCommand;
 import dansplugins.kdrtracker.services.ConfigService;
 import dansplugins.kdrtracker.services.StorageService;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Server;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
+import org.bukkit.command.SimpleCommandMap;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.PluginManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
+import org.mockito.MockedStatic;
+import preponderous.ponder.minecraft.bukkit.abs.AbstractPluginCommand;
+import preponderous.ponder.minecraft.bukkit.services.CommandService;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 /**
@@ -19,8 +34,9 @@ import static org.mockito.Mockito.*;
  * Pins KDRTracker#isVersionMismatched, which decides on an existing install
  * whether config.yml is rewritten at start-up (performCompatibilityChecks):
  * a mismatch stamps the running version into the file and copies in any
- * bundled option it lacks. Also pins the usage-reporting notice and what
- * onEnable does when the player records cannot be read. The plugin is mocked
+ * bundled option it lacks. Also pins the usage-reporting notice, what
+ * onEnable does when the player records cannot be read, and that onCommand
+ * routes a sub-command however its base command was typed. The plugin is mocked
  * because a real JavaPlugin cannot be constructed outside a server; only the
  * method under test runs for real, against a real YamlConfiguration.
  */
@@ -98,6 +114,42 @@ class KDRTrackerTest {
         verify(pluginManager).disablePlugin(kdrTracker);
         verifyNoInteractions(configService);
         verify(server, never()).getScheduler();
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"kdrt", "kdrtracker", "kdrtracker:kdrt", "kdrtracker:kdrtracker"})
+    void aSubCommand_reachesItsCommand_whicheverWayTheBaseCommandIsTyped(String typed) throws Exception {
+        // Bukkit's command map, onCommand, ponder and HelpCommand are real. The plugin is mocked,
+        // and CommandForwardedToThePlugin stands in for PluginCommand.
+        CommandService commandService = new CommandService(new HashSet<>(Arrays.asList("kdrt", "kdrtracker")));
+        commandService.initialize(new ArrayList<AbstractPluginCommand>(Arrays.asList(new HelpCommand())), "That command wasn't found.");
+        setField("commandService", commandService);
+        when(kdrTracker.onCommand(any(), any(), any(), any())).thenCallRealMethod();
+        CommandSender sender = mock(CommandSender.class);
+        when(sender.hasPermission("kdrt.help")).thenReturn(true);
+
+        // SimpleCommandMap's timings reach for the static Bukkit server.
+        try (MockedStatic<Bukkit> bukkit = mockStatic(Bukkit.class, RETURNS_DEEP_STUBS)) {
+            SimpleCommandMap commandMap = new SimpleCommandMap(mock(Server.class));
+            commandMap.register("kdrtracker", new CommandForwardedToThePlugin("kdrt"));
+            commandMap.register("kdrtracker", new CommandForwardedToThePlugin("kdrtracker"));
+
+            assertTrue(commandMap.dispatch(sender, typed + " help"));
+        }
+
+        verify(sender).sendMessage(ChatColor.AQUA + "/kdrt help - View a list of helpful commands.");
+    }
+
+    /** Hands a command to the plugin the way Bukkit's PluginCommand does. */
+    private class CommandForwardedToThePlugin extends Command {
+        CommandForwardedToThePlugin(String name) {
+            super(name);
+        }
+
+        @Override
+        public boolean execute(CommandSender sender, String commandLabel, String[] args) {
+            return kdrTracker.onCommand(sender, this, commandLabel, args);
+        }
     }
 
     private void setField(String name, Object value) throws ReflectiveOperationException {

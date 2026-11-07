@@ -92,10 +92,10 @@ public final class KDRTracker extends PonderBukkitPlugin {
     }
 
     /**
-     * This method handles commands sent to the minecraft server and interprets them if the label matches one of the core commands.
+     * This method handles commands sent to the minecraft server and interprets them.
      * @param sender The sender of the command.
-     * @param cmd The command that was sent. This is unused.
-     * @param label The core command that has been invoked.
+     * @param cmd The core command that has been invoked.
+     * @param label The command as it was typed. This is unused.
      * @param args Arguments of the core command. Often sub-commands.
      * @return A boolean indicating whether the execution of the command was successful.
      */
@@ -110,7 +110,9 @@ public final class KDRTracker extends PonderBukkitPlugin {
             return defaultCommand.execute(sender);
         }
 
-        return commandService.interpretAndExecuteCommand(sender, label, args);
+        // The name, not the label: a label is whatever was typed, and ponder silently ignores
+        // anything but a base command, which /kdrtracker:kdrt would not be.
+        return commandService.interpretAndExecuteCommand(sender, cmd.getName(), args);
     }
 
     /**
