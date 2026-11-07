@@ -119,7 +119,8 @@ class KDRTrackerTest {
     @ParameterizedTest
     @ValueSource(strings = {"kdrt", "kdrtracker", "kdrtracker:kdrt", "kdrtracker:kdrtracker"})
     void aSubCommand_reachesItsCommand_whicheverWayTheBaseCommandIsTyped(String typed) throws Exception {
-        // Everything between the typed line and HelpCommand is real except the plugin itself.
+        // Bukkit's command map, onCommand, ponder and HelpCommand are real. The plugin is mocked,
+        // and CommandForwardedToThePlugin stands in for PluginCommand.
         CommandService commandService = new CommandService(new HashSet<>(Arrays.asList("kdrt", "kdrtracker")));
         commandService.initialize(new ArrayList<AbstractPluginCommand>(Arrays.asList(new HelpCommand())), "That command wasn't found.");
         setField("commandService", commandService);

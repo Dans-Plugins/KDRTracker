@@ -92,7 +92,7 @@ public final class KDRTracker extends PonderBukkitPlugin {
     }
 
     /**
-     * This method handles commands sent to the minecraft server and interprets them if the label matches one of the core commands.
+     * This method handles commands sent to the minecraft server and interprets them.
      * @param sender The sender of the command.
      * @param cmd The core command that has been invoked.
      * @param label The command as it was typed. This is unused.
