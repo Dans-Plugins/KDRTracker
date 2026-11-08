@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## [0.6.1] – 2026-11-08
+
 ### Fixed
 
 - Sub-commands now work when the base command is typed with the plugin's name in front, such as `/kdrtracker:kdrt info`. Those forms did nothing and sent no reply; only a bare `/kdrtracker:kdrt` worked.
