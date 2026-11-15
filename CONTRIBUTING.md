@@ -13,6 +13,7 @@ Thank you for your interest in contributing to KDR Tracker! This guide will help
 
 - A GitHub account
 - Git installed on your local machine
+- JDK 17 (the version CI builds and tests with) and [Maven](https://maven.apache.org/), to build the plugin and run the tests
 - A Java IDE or text editor
 - A basic understanding of Java
 
@@ -27,13 +28,7 @@ Thank you for your interest in contributing to KDR Tracker! This guide will help
 
 ## Identifying What to Work On
 
-### Issues
-
 Work items are tracked as [GitHub issues](https://github.com/Dans-Plugins/KDRTracker/issues).
-
-### Milestones
-
-Issues are grouped into [milestones](https://github.com/Dans-Plugins/KDRTracker/milestones) representing upcoming releases.
 
 ## Making Changes
 
