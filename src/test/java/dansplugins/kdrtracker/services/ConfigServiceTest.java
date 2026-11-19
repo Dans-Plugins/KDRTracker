@@ -4,7 +4,13 @@ import dansplugins.kdrtracker.KDRTracker;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 import org.mockito.InOrder;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -26,12 +32,16 @@ class ConfigServiceTest {
     private YamlConfiguration config;
     private ConfigService configService;
 
+    @TempDir
+    File dataFolder;
+
     @BeforeEach
     void setUp() {
         kdrTracker = mock(KDRTracker.class);
         config = new YamlConfiguration();
         when(kdrTracker.getConfig()).thenReturn(config);
         when(kdrTracker.getVersion()).thenReturn(PLUGIN_VERSION);
+        when(kdrTracker.getDataFolder()).thenReturn(dataFolder);
         configService = new ConfigService(kdrTracker);
     }
 
@@ -106,6 +116,21 @@ class ConfigServiceTest {
         assertTrue(configService.isUsageReportingEnabled());
 
         config.set("usage-reporting.enabled", false);
+        assertFalse(configService.isUsageReportingEnabled());
+    }
+
+    @Test
+    void isUsageReportingEnabled_aQuotedFalseIsOff() {
+        // getBoolean() would read the string "false" as the bundled default, true.
+        config.set("usage-reporting.enabled", "false");
+        assertFalse(configService.isUsageReportingEnabled());
+    }
+
+    @Test
+    void isUsageReportingEnabled_anOptOutWrittenToTheFileWins() throws IOException {
+        config.set("usage-reporting.enabled", true);
+        Files.write(new File(dataFolder, "config.yml").toPath(),
+                "usage-reporting:\n  enabled: false\n".getBytes(StandardCharsets.UTF_8));
         assertFalse(configService.isUsageReportingEnabled());
     }
 

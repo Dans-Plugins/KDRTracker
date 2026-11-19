@@ -29,14 +29,20 @@ server cannot be reached. The plugin says on the console at every start whether 
 To turn it off, in order of precedence:
 
 - the environment variable `TRACE_USAGE_REPORTING=off` (or `DO_NOT_TRACK=1`) turns it off for every
-  program in the server process. `TRACE_USAGE_REPORTING` also accepts `false`, `0` or `no`, and
-  `DO_NOT_TRACK` also accepts `true` or `yes`, matched case-insensitively and ignoring surrounding spaces; any
-  other value, such as `TRACE_USAGE_REPORTING=on` or `DO_NOT_TRACK=0`, leaves reporting to the
-  switches below;
+  program in the server process. Both fail closed: `TRACE_USAGE_REPORTING` set to anything but blank or
+  `true`/`on`/`yes`/`1`, or `DO_NOT_TRACK` set to anything but blank or `0`/`false`/`off`/`no`, turns it off
+  (matched case-insensitively and ignoring surrounding spaces);
 - `enabled: false` in `plugins/trace/config.yml` turns it off for every plugin on the server that
   reports to trace — the file is created with `enabled: true` by the first such plugin to start and
   is never turned back on by a plugin;
 - `usage-reporting.enabled: false` in this plugin's `config.yml` turns it off for KDRTracker alone.
+
+Only a value that clearly means on (`true`, or the string `true`, `on`, `yes` or `1`) turns reporting on: a quoted
+`"false"`, a typo or an empty value turns it off. The plugin never writes over a `config.yml` it cannot
+parse; it logs the error, and reporting stays off until the file is fixed. An `enabled: false` written by
+hand while the server runs is kept by every later save of the config. The environment variables fail
+closed too: `TRACE_USAGE_REPORTING` set to anything but blank or `true`/`on`/`yes`/`1` turns reporting
+off, as does `DO_NOT_TRACK` set to anything but blank or `0`/`false`/`off`/`no`.
 
 A `config.yml` written by a version before the `usage-reporting` block existed is rewritten with the
 block, using the bundled values, the next time the plugin starts, so the switch is visible in the

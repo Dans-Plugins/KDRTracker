@@ -10,14 +10,16 @@ package dansplugins.kdrtracker.services;
  */
 
 import dansplugins.kdrtracker.KDRTracker;
+import dansplugins.kdrtracker.trace.UsageReportingSetting;
 import org.bukkit.configuration.file.FileConfiguration;
+
+import java.io.File;
 
 /**
  * @author Daniel McCoy Stephenson
  */
 public class ConfigService {
     private static final String SAVE_INTERVAL_KEY = "saveInterval";
-    private static final String USAGE_REPORTING_ENABLED_KEY = "usage-reporting.enabled";
     private static final String USAGE_REPORTING_ENDPOINT_KEY = "usage-reporting.endpoint";
     private static final String USAGE_REPORTING_KEY_KEY = "usage-reporting.key";
     private static final String DEFAULT_USAGE_REPORTING_ENDPOINT = "https://trace.danielstephenson.dev";
@@ -90,8 +92,11 @@ public class ConfigService {
     // the fall-through only matters if that write failed. Verified against
     // YamlConfiguration, not assumed.
 
+    // Not getBoolean(): it returns the bundled true for a quoted "false" or any other value
+    // that is not a YAML boolean. Only a value that clearly means "on" turns reporting on, and
+    // an opt-out in the file on disk (or a file that cannot be parsed) always wins.
     public boolean isUsageReportingEnabled() {
-        return getBoolean(USAGE_REPORTING_ENABLED_KEY);
+        return UsageReportingSetting.isEnabled(getConfig(), new File(kdrTracker.getDataFolder(), "config.yml"));
     }
 
     public String getUsageReportingEndpoint() {
