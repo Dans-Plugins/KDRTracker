@@ -11,6 +11,7 @@ import dansplugins.kdrtracker.services.AutoSaveService;
 import dansplugins.kdrtracker.services.ConfigService;
 import dansplugins.kdrtracker.services.StorageService;
 import dansplugins.kdrtracker.trace.TraceClient;
+import dansplugins.kdrtracker.trace.UsageReportingSetting;
 import dansplugins.kdrtracker.utils.Logger;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -80,6 +81,25 @@ public final class KDRTracker extends PonderBukkitPlugin {
             getLogger().info("Usage reporting is off (" + trace.disabledReason() + ").");
         }
         trace.report("startup");
+    }
+
+    /**
+     * Every save of config.yml goes through here. A config.yml Bukkit could not parse was loaded
+     * as empty, so saving it would replace the operator's whole file, opt-out included, with the
+     * defaults: it is left alone instead. Otherwise an {@code enabled: false} found on disk is
+     * carried into the loaded config first, so a copy loaded before the operator edited the file
+     * cannot turn reporting back on.
+     */
+    @Override
+    public void saveConfig() {
+        File configFile = new File(getDataFolder(), "config.yml");
+        if (UsageReportingSetting.isUnparseable(configFile)) {
+            getLogger().severe("config.yml could not be read, so it was not overwritten. Fix the YAML error in it"
+                    + " and restart; until then the defaults are used, and usage reporting is off.");
+            return;
+        }
+        UsageReportingSetting.keepOptOutFromDisk(getConfig(), configFile);
+        super.saveConfig();
     }
 
     /**
